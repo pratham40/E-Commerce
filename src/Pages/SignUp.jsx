@@ -1,7 +1,33 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import authService from '../appwrite/auth';
+import toast from 'react-hot-toast';
 
 function Signup() {
+
+  const navigate = useNavigate();
+
+  async function handleSignup() {
+    const name = "John Doe";
+    const email = "pratham1@gmail.com";
+    const password = "12345678";
+    try {
+      const data=await authService.createAccount({ name, email, password });
+      console.log(data);
+      if (data) {
+        console.log(data);
+        
+        navigate('/verifyemail');
+      }
+      toast.success('Account created successfully. Please verify your email.');
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+
+  useEffect(() => {
+    handleSignup();
+  }, []);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">

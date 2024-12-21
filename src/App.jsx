@@ -4,6 +4,7 @@ import NotFound from "./Pages/NotFound"
 import HomeLayout from "./Layout/HomeLayout"
 import Login from "./Pages/Login"
 import Signup from "./Pages/SignUp"
+import VerifyEmail from "./Pages/VerifyEmail"
 
 function App() {
   
@@ -16,7 +17,8 @@ function App() {
         </Route>
 
         <Route path="/login" element={<Login/>}/>
-          <Route path="/signup" element={<Signup/>}/>
+        <Route path="/signup" element={<Signup/>}/>
+        <Route path="/verifyemail" element={<VerifyEmail/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Routes>
     </>
