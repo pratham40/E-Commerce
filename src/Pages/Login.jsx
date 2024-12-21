@@ -1,23 +1,61 @@
 import React from 'react';
 import { FaGoogle } from 'react-icons/fa6';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import authService from '../appwrite/auth';
+import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { login } from '../Redux/Slices/AuthSlices';
 
 function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  async function handleOAuth(){
+  async function handleOAuth() {
     try {
-      const res=await authService.handleOAuthLogin();
-      console.log(res);
+      const res = await authService.handleOAuthLogin();
+
+      if (res) {
+        toast.success('Logged in with Google');
+        dispatch(login({
+          role: 'user',
+          data: res,
+          isLoggedIn: true
+        }));
+        navigate('/');
+      }
     } catch (error) {
-      console.log(error);
+      toast.error('Failed to login with Google');
+      navigate("/fail");
     }
   }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const email = e.target.email.value; 
+    const password = e.target.password.value;
+
+    try {
+      const res = await authService.login({ email, password });
+      console.log(res);
+      if (res) {
+        dispatch(login({
+          role: 'user',
+          data: res,
+          isLoggedIn: true
+        }));
+        toast.success('Logged in successfully');
+        navigate('/');
+      }
+    } catch (error) {
+      toast.error('Failed to login');
+    }
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-center">Login</h1>
-        <form className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300">Email</label>
             <input
@@ -59,14 +97,11 @@ function Login() {
             </Link>
           </p>
         </div>
-        <div className='flex justify-center'>
-          <Link onClick={handleOAuth} className="btn btn-active btn-primary w-full">
-            
-              <FaGoogle
-                size="20px"
-              />
-              Login with Google
-          </Link>
+        <div className="flex justify-center">
+          <button onClick={handleOAuth} className="btn btn-active btn-primary w-full">
+            <FaGoogle size="20px" />
+            Login with Google
+          </button>
         </div>
       </div>
     </div>

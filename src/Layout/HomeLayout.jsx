@@ -1,10 +1,28 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, Outlet } from 'react-router-dom'
 import Footer from '../Pages/Footer'
+import authService from '../appwrite/auth'
+import { logout } from '../Redux/Slices/AuthSlices'
+import toast from 'react-hot-toast'
 
 function HomeLayout() {
   const status = useSelector((state) => state.auth.isLoggedIn)
+  const dispatch = useDispatch();
+
+  async function handleLogout() {
+    try {
+      const userData = await authService.getCurrentUser();
+      const res = await authService.logout({ sessionId: userData.$id });
+      
+      if (res.success) {
+        dispatch(logout());
+        toast.success('Logged out successfully');
+      }
+    } catch (error) {
+      toast.error('Failed to logout');
+    }
+  }
 
   useEffect(() => {
     console.log(status);
@@ -38,13 +56,15 @@ function HomeLayout() {
                     tabIndex={0}
                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     <li>
-                      <a className="justify-between">
+                      <Link className="justify-between">
                         Profile
                         <span className="badge">New</span>
-                      </a>
+                      </Link>
                     </li>
-                    <li><a>Settings</a></li>
-                    <li><a>Logout</a></li>
+                    <li><Link>Settings</Link></li>
+                    <li>
+                      <Link onClick={handleLogout}>Logout</Link>
+                    </li>
                   </ul>
                 </div>
               ) : (
