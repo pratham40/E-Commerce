@@ -88,7 +88,7 @@ export class AuthService {
         }
     }
 
-    async logout({sessionId}) {
+    async logout({sessionId}) { 
         try {
             if (!sessionId) {
                 throw new Error('Session ID is required for logout');

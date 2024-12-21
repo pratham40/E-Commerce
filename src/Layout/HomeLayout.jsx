@@ -12,9 +12,9 @@ function HomeLayout() {
 
   async function handleLogout() {
     try {
-      const userData = await authService.getCurrentUser();
-      const res = await authService.logout({ sessionId: userData.$id });
-      
+      const sessionId = await authService.account.getSession('current');
+      const res = await authService.logout({ sessionId: sessionId.$id });
+      console.log(res);
       if (res.success) {
         dispatch(logout());
         toast.success('Logged out successfully');
