@@ -4,7 +4,7 @@ import authService from '../appwrite/auth';
 import toast from 'react-hot-toast';
 
 function Signup() {
-
+  const navigate = useNavigate();
   async function handleSignup() {
     const name = "John Doe";
     const email = "pratham5@gmail.com";
@@ -13,7 +13,7 @@ function Signup() {
       const data=await authService.createAccount({ name, email, password });
       console.log(data);
       if (data) {
-        console.log(data);
+        navigate('/verifyemail');
       }
       toast.success('Account created successfully. Please verify your email.');
     } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import authService from "../appwrite/auth";
 import toast from "react-hot-toast";
 
@@ -11,7 +11,9 @@ const VerifyEmail = () => {
   useEffect(() => {
     const checkEmailVerification = async () => {
       try {
-        const [params] = useSearchParams();
+
+        const params = useParams();
+        console.log(params);
         
         const secret = params.get("secret");
         const userId = params.get("userId");

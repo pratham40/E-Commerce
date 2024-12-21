@@ -1,7 +1,18 @@
 import React from 'react';
+import { FaGoogle } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
+import authService from '../appwrite/auth';
 
 function Login() {
+
+  async function handleOAuth(){
+    try {
+      const res=await authService.handleOAuthLogin();
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
@@ -41,6 +52,21 @@ function Login() {
               Register here
             </Link>
           </p>
+          <p className="text-sm text-gray-400 text-center">
+            Forgot your password?{' '}
+            <Link to="/forgot-password" className="text-indigo-400 hover:underline">
+              Reset here
+            </Link>
+          </p>
+        </div>
+        <div className='flex justify-center'>
+          <Link onClick={handleOAuth} className="btn btn-active btn-primary w-full">
+            
+              <FaGoogle
+                size="20px"
+              />
+              Login with Google
+          </Link>
         </div>
       </div>
     </div>
