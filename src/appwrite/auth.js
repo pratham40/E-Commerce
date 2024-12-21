@@ -33,7 +33,7 @@ export class AuthService{
 
     async createVerification(){
         try {
-            const response = await this.account.createVerification('http://localhost:5173/verify');
+            const response = await this.account.createVerification('http://localhost:5173/verifyemail/');
             console.log(response);
             
             return response;

@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import authService from "../appwrite/auth";
 import toast from "react-hot-toast";
 
 const VerifyEmail = () => {
   const [isVerified, setIsVerified] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null); // New state for error handling
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkEmailVerification = async () => {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        console.log(urlParams);
+        const [params] = useSearchParams();
         
-        const secret = urlParams.get("secret");
-        const userId = urlParams.get("userId");
+        const secret = params.get("secret");
+        const userId = params.get("userId");
 
         if (!secret || !userId) {
-          setErrorMessage("Invalid verification link.");
-          setIsLoading(false);
           return;
         }
 
+        setIsLoading(true);
         const response = await authService.verifyEmail({ userId, secret });
         if (response) {
           setIsVerified(true);
-          setIsLoading(false);
           toast.success("Email verified successfully.");
           navigate("/"); // Redirect to home page after verification
         }
       } catch (error) {
-        setErrorMessage(error.message || "Failed to verify email.");
-        setIsLoading(false);
         toast.error(error.message || "Failed to verify email.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -60,10 +56,7 @@ const VerifyEmail = () => {
       <h1 className="text-4xl font-bold mb-6">Email Verification</h1>
 
       {isLoading ? (
-        <p className="text-lg text-yellow-400">
-          <span className="loading loading-dots loading-md"></span>
-          Checking your verification status...
-        </p>
+        <p className="text-lg text-yellow-400">Checking your verification status...</p>
       ) : isVerified ? (
         <div className="text-center">
           <p className="text-lg text-green-500 mb-4">
@@ -75,7 +68,6 @@ const VerifyEmail = () => {
           <p className="text-lg text-yellow-400 mb-4">
             Your email is not yet verified. Please check your inbox.
           </p>
-          {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
           <button
             onClick={handleResendVerification}
             className={`px-6 py-3 text-lg font-medium rounded-md ${
